@@ -116,5 +116,19 @@
 				"result" => ""
 			));
 		}
+		
+		public function updateSort(){
+			mysql_query("
+				UPDATE tb_apartment
+				SET `sort` = ".$this->sortable."
+				WHERE id = '".$this->id."'
+			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
+			
+			return json_encode(array(
+				"act" => __CLASS__." -> ".__METHOD__." ".__LINE__,
+				"status" => true,
+				"result" => ""
+			));
+		}
 	}
 ?>

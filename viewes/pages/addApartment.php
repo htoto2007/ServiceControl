@@ -4,6 +4,13 @@
 	$user_getRankById_arr = json_decode($User->getRankById(), true);
 	if((int)$user_getRankById_arr["result"] < 10) exit; 
 ?>
+<script src="/models/javascript/model_apartment.js?<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/models/javascript/model_apartment.js');?>"></script>
+<script>
+	var _apartment = new Apartment;
+	setTimeout(function(){
+	
+	}, 5000);
+</script>
 <div class="addApartment">
 	<div class="titlePage">
 		Добавление/удаление квартир
@@ -24,9 +31,12 @@
 	</div>
 	<?php include ($_SERVER['DOCUMENT_ROOT']."/controllers/php/controller_ajax_apartment_getInfo.php");?>
 	<div class="layouts">
+		<script>
+			var arrIds = [];
+		</script>
 		<?php
 			$AccessToApartments = new AccessToApartments();
-			foreach($apartment_getInfo_arrResult["result"] as $apartment){
+			foreach($apartment_getInfo_arrResult["result"] as $key => $apartment){
 				$AccessToApartments->idEmployee = $_COOKIE['id_user'];
 				$AccessToApartments->idApartment = $apartment["id"];
 				$accessToApartments_getInfoByIdApartment_arr = json_decode($AccessToApartments->getInfoByIdEmployeeAndIdApartment(), true);
@@ -36,7 +46,12 @@
 				if($accessToApartments_getInfoByIdApartment_arr["result"] !== false){
 		?>
 				<div class="layout" id="<?=$apartment['id'];?>">
-					<div class="row">
+					
+					<script>
+						arrIds[<?=$key;?>] = <?=$apartment["id"];?>
+					</script>
+					
+					<div class="row" id="apartmentItem">
 						<div class="header">
 							<?=$apartment["adres"];?>
 						</div>
@@ -59,21 +74,24 @@
 								</button>
 							</form>
 						</div>
-						<form>
-							<input type="number" class="sort" readonly value="<?=(int)$apartment['sort'];?>">
+						<form class="sort" id="sort<?=$apartment['id'];?>">
+							<input type="number" name="sort" class="sort" readonly value="<?=(int)$key;?>">
+							<input type="hidden" name="id" value="<?=$apartment['id'];?>">
+							
 							<i class="fas fa-chevron-circle-down" 
 								onClick="
 									var elem = $(this).parent().parent().parent();
-									var id = <?=$apartment['id'];?>;
-									_apartment.moveDown(elem, id);
+									_apartment.moveDown(elem);
+										 _apartment.sortUpdate();
 								"></i>
 							<i class="fas fa-chevron-circle-up" 
 								onClick="
 									var elem = $(this).parent().parent().parent();
-									var id = <?=$apartment['id'];?>;
-									_apartment.moveUp(elem, id);
+									_apartment.moveUp(elem);
+										 _apartment.sortUpdate();
 								"></i>
 						</form>
+						
 					</div>
 				</div>
 			<?php	
@@ -82,7 +100,6 @@
 		?>
 	</div>
 </div>
-<script src="/models/javascript/model_apartment.js?<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/models/javascript/model_apartment.js');?>"></script>
 <script>
-	var _apartment = new Apartment;
+	_apartment.sortUpdate();
 </script>

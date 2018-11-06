@@ -96,6 +96,7 @@
 	}
 ?>
 <script src="/models/javascript/model_guestLeft.js?<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/models/javascript/model_guestLeft.js');?>"></script>
+<script src="/models/javascript/model_apartmentCleaning.js<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/models/javascript/model_apartmentCleaning.js');?>"></script>
 <script>
 	var _GuestLeft = new GuestLeft();
 </script>

@@ -11,6 +11,11 @@
 				"userName" => "cn37665_servicec",
 				"password" => "1a9a9a2a"
 			),
+			2 => array(
+				"dataBaseName" => "cr47836_servicec",
+				"userName" => "cr47836_servicec",
+				"password" => "3pkjrPWQQoPo"
+			),
 		);
 		
 		private $hostName = 'localhost';

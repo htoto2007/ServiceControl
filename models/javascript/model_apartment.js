@@ -104,96 +104,75 @@ function Apartment() {
 			});
 		}
 	}
+	
+	this.sortUpdate = function () {
+		
+		var elems = $("div.layouts").find("div.layout");
+		console.log(elems.length);
+		
+		$.each(elems, function( index, value ) {
+			var arr = { 
+				"id": $(value).attr('id'),
+				"sort": index
+			}
+			$(value).children("div.row").children("form.sort").children("input.sort").val(index);
+			
+			var io = new IO;
+			io.start({
+				'idForm': "", // Форма отправляемых данных
+				'data': arr, // Если форма получения данных не определена в idForm, принемает массив отправляемых данных
+				'url': "/controllers/php/controller_ajax_apartment_updateSort.php", // Путь до обработчика данных
+				'method': "POST", // Принемает тип метода передачи данных
+				'async': true, // Определяет асинхронность AJAX
+				'idError': "div.notice div.err", // Принемает id элемента для вывода ошибок
+				'idBefore': "", // Принемает id элемента для вывода статуса отправки данных
+				'typeOut': "html", // Принемает значения "html" и "vlue". Определяет тип вывода данных
+				'idSuccess': "", // Принемает id элемента для вывода ответа сервера (обработчика данных)
+				'idComplete': "", // Принемает id элемента для вывода ответа сервера (обработчика данных) после полной отработки AJAX
+				'delay': "", // Определяет время задержки вывода вывода ответа сервера на экран после полной отработки AJAX
+				'callback': "", // Принемает функцию. Инициализирует фпринятую функцию после полной отработки AJAX
+				'completeText': "",
+				'beforeSendFunction': "",
+				'successFunction': function (html) {
 
-	this.moveUp = function (elem) {
-		var io = new IO;
-		io.start({
-			'idForm': "", // Форма отправляемых данных
-			'data': {"iterator": "-1"}, // Если форма получения данных не определена в idForm, принемает массив отправляемых данных
-			'url': "/controllers/php/controller_ajax_apartment_cahngeSort.php", // Путь до обработчика данных
-			'method': "POST", // Принемает тип метода передачи данных
-			'async': true, // Определяет асинхронность AJAX
-			'idError': "div.notice div.err", // Принемает id элемента для вывода ошибок
-			'idBefore': "", // Принемает id элемента для вывода статуса отправки данных
-			'typeOut': "html", // Принемает значения "html" и "vlue". Определяет тип вывода данных
-			'idSuccess': "", // Принемает id элемента для вывода ответа сервера (обработчика данных)
-			'idComplete': "", // Принемает id элемента для вывода ответа сервера (обработчика данных) после полной отработки AJAX
-			'delay': "", // Определяет время задержки вывода вывода ответа сервера на экран после полной отработки AJAX
-			'callback': "", // Принемает функцию. Инициализирует фпринятую функцию после полной отработки AJAX
-			'completeText': "",
-			'beforeSendFunction': "",
-			'successFunction': function (html) {
-				var arr = Array();
-				try {
-					arr = JSON.parse(html);
-				} catch (e) {
-					io.notice("div.notice div.err", html);
-					return;
-				}
-				
-				if (arr.status === false) {
-					io.notice("div.notice div.err", arr.result.result);
-					return;
-				}
-				
-				if (arr.status === true) {
-					var idContent = "#" + $(elem).attr('id');
-					var idElement = "#" + $(elem).prev().attr('id');
-					$(idContent).insertBefore(idElement);
-					return;
-				}
-				
-				io.notice("div.notice div.err", "Неожиданная ошибка!");
-			},
-			'idProgressBar': ""
+					var arr = Array();
+
+					try {
+						arr = JSON.parse(html);
+					} catch (e) {
+						io.notice("div.notice div.err", html);
+
+						return;
+					}
+
+					if (arr.status === false) {
+						io.notice("div.notice div.err", arr.result.result);
+						return;
+					}
+
+					if (arr.status === true) {
+						var idContent = "#" + $(elem).attr('id');
+						var idElement = "#" + $(elem).prev().attr('id');
+						//$(idContent).insertBefore(idElement);
+						return;
+					}
+
+					io.notice("div.notice div.err", "Неожиданная ошибка!");
+				},
+				'idProgressBar': ""
+			});
 		});
 	};
+
+	this.moveUp = function (elem) {
+		var idContent = "#" + $(elem).attr('id');
+		var idElement = "#" + $(elem).prev().attr('id');
+		$(idContent).insertBefore(idElement);
+	};
 	
-	this.moveDown = function(elem, id) {
-		var io = new IO;
-		io.start({
-			'idForm': "", // Форма отправляемых данных
-			'data': {
-					"iterator": "1", 
-					"id": id
-				}, // Если форма получения данных не определена в idForm, принемает массив отправляемых данных
-			'url': "/controllers/php/controller_ajax_apartment_cahngeSort.php", // Путь до обработчика данных
-			'method': "POST", // Принемает тип метода передачи данных
-			'async': true, // Определяет асинхронность AJAX
-			'idError': "div.notice div.err", // Принемает id элемента для вывода ошибок
-			'idBefore': "", // Принемает id элемента для вывода статуса отправки данных
-			'typeOut': "html", // Принемает значения "html" и "vlue". Определяет тип вывода данных
-			'idSuccess': "", // Принемает id элемента для вывода ответа сервера (обработчика данных)
-			'idComplete': "", // Принемает id элемента для вывода ответа сервера (обработчика данных) после полной отработки AJAX
-			'delay': "", // Определяет время задержки вывода вывода ответа сервера на экран после полной отработки AJAX
-			'callback': "", // Принемает функцию. Инициализирует фпринятую функцию после полной отработки AJAX
-			'completeText': "",
-			'beforeSendFunction': "",
-			'successFunction': function (html) {
-				var arr = Array();
-				try {
-					arr = JSON.parse(html);
-				} catch (e) {
-					io.notice("div.notice div.err", html);
-					return;
-				}
-				
-				if (arr.status === false) {
-					io.notice("div.notice div.err", arr.result.result);
-					return;
-				}
-				
-				if (arr.status === true) {
-					var idContent = "#" + $(elem).attr('id');
-					var idElement = "#" + $(elem).next().attr('id');
-					$(idContent).insertAfter(idElement);
-					return;
-				}
-				
-				// Если ответ не попадает не под одно условие
-				io.notice("div.notice div.err", "Неожиданная ошибка!");
-			},
-			'idProgressBar': ""
-		});
+	this.moveDown = function(elem) {
+		var idContent = "#" + $(elem).attr('id');
+		var idElement = "#" + $(elem).next().attr('id');
+		$(idContent).insertAfter(idElement);
 	};
 }
