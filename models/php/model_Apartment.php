@@ -31,7 +31,6 @@
 					id='".$this->id."'
 					AND
 					`delete` = 0
-				ORDER BY id DESC
 			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
 			
 			$arr = mysql_fetch_array($query);
@@ -93,20 +92,6 @@
 			mysql_query("
 				UPDATE tb_apartment
 				SET `delete` = 1
-				WHERE id = '".$this->id."'
-			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
-			
-			return json_encode(array(
-				"act" => __CLASS__." -> ".__METHOD__." ".__LINE__,
-				"status" => true,
-				"result" => ""
-			));
-		}
-		
-		public function changeSort(){
-			mysql_query("
-				UPDATE tb_apartment
-				SET `sort` = `sort` + ".$this->sortable."
 				WHERE id = '".$this->id."'
 			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
 			

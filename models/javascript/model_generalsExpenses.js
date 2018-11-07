@@ -38,7 +38,7 @@ function GeneralsExpenses(){
 					else if(arr.result.result == "Date id empty")
 						io.notice("div.notice div.err", "Поля даты не заполнены!");
 					else
-						io.notice("div.notice div.err", "Ошибка!");
+						io.notice("div.notice div.err", "Ошибка!" + arr.result);
 				}
 			},
 			'idProgressBar': ""

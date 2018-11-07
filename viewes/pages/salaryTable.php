@@ -8,7 +8,7 @@
 <?php include ($_SERVER['DOCUMENT_ROOT']."/controllers/php/controller_ajax_ApartmentCleaning.php");?>
 <?php include ($_SERVER['DOCUMENT_ROOT']."/controllers/php/controller_ajax_accessToApartments.php");?>
 <?php include ($_SERVER['DOCUMENT_ROOT']."/controllers/php/controller_ajax_apartment.php");?>
-
+<?php include ($_SERVER['DOCUMENT_ROOT']."/controllers/php/controller_ajax_apartmentState.php");?>
 <div class="dateBlock">
 	<div class="datePeriod">
 		<div class="title">с</div>
@@ -157,11 +157,19 @@
 				?>
 				<td>
 				<?php
-					if($ApartmentCleaning_getInfoByDateAndIdApartmentAndIdEmployee["result"]["id"] != ""){
-						 echo "Производилась уборка";
-						$sumCleaning++;
-					}
-					//print_r($ApartmentCleaning_getInfoByDateAndIdApartmentAndIdEmployee);
+				$ApartmentState->idEmployee 	= $ApartmentCleaning->idEmployee;
+				$ApartmentState->idApartment 	= $ApartmentCleaning->idApartment;
+				$ApartmentState->dateValue 		= $ApartmentCleaning->date;
+				$ApartmentState_isExitByDateByIdEmployeeByIdApartment = json_decode($ApartmentState->isExitByDateByIdEmployeeByIdApartment(), true);	
+				
+				if(count($ApartmentCleaning_getInfoByDateAndIdApartmentAndIdEmployee["result"]) > 0){
+					$sumCleaning += count($ApartmentCleaning_getInfoByDateAndIdApartmentAndIdEmployee["result"]);
+					echo " Промежуточных уборок (" . count($ApartmentCleaning_getInfoByDateAndIdApartmentAndIdEmployee["result"]) . ")";
+				}
+				if(count($ApartmentState_isExitByDateByIdEmployeeByIdApartment["result"]) > 0){
+					$sumCleaning += count($ApartmentState_isExitByDateByIdEmployeeByIdApartment["result"]);
+					echo " Выездов (" . count($ApartmentState_isExitByDateByIdEmployeeByIdApartment["result"]) . ")";
+				}
 				?>
 				</td>
 				<?php

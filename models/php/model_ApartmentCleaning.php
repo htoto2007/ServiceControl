@@ -5,6 +5,8 @@
 		public $idApartment = 0;
 		public $idEmployee = 0;
 		public $date = "01-01-1970";
+		public $startDate = "01-01-1970";
+		public $endDate = "01-01-1970";
 		
 		
 		
@@ -29,6 +31,29 @@
 			));
 		}
 		
+		public function getInfoByDatePeriodAndIdApartment(){
+			$query = mysql_query("
+				SELECT * 
+				FROM  tb_apartment_cleaning 
+				WHERE
+					id_apartment = '".$this->idApartment."'
+					AND 
+					date <= DATE('".$this->startDate."') 
+					AND 
+					date >= DATE('".$this->endDate."')
+			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
+			$row = array();
+			for($i = 0; $i < mysql_num_rows($query); $i++){
+				$row[$i] = mysql_fetch_array($query);
+			}
+			
+			return json_encode(array(									// выводим результат
+				"act" 		=> __METHOD__." ".__LINE__,
+				"status" 	=> true,
+				"result" 	=> $row
+			));
+		}
+		
 		public function getInfoByDateAndIdApartmentAndIdEmployee(){
 			$query = mysql_query("
 				SELECT * 
@@ -40,13 +65,14 @@
 					AND 
 					id_employee = '".$this->idEmployee."'
 			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
-			$row = array();
-			$row = mysql_fetch_array($query);
-			
+			$rows = array();
+			for($i = 0; $i < mysql_num_rows($query); $i++){
+				$rows[$i] = mysql_fetch_array($query);
+			}
 			return json_encode(array(									// выводим результат
 				"act" 		=> __METHOD__." ".__LINE__,
 				"status" 	=> true,
-				"result" 	=> $row
+				"result" 	=> $rows
 			));
 		}
 		

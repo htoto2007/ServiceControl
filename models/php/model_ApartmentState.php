@@ -8,6 +8,7 @@
 		public $dateValue				= "";
 		public $dateStart				= "";
 		public $dateEnd					= "";
+		public $idEmployee				= 0;
 		
 		public $numberOfChildren 		= 0;
 		public $numberOfAdults 			= 0;
@@ -236,8 +237,8 @@
 				$daysLeft 				= json_decode($this->getCountDaysByPeriodDate(), true);
 				$arr[$i]["daysLeft"] 	= $daysLeft["result"];
 				$arr[$i]["totalDays"] 	= $totalDays["result"];
-				
-				$arr[$i]["costPerDay"]	= round(((float)$arr[$i]["amount_in_cash"] / (float)$arr[$i]["totalDays"]), 3);
+				if((float)$arr[$i]["totalDays"] > 0)
+					$arr[$i]["costPerDay"]	= round(((float)$arr[$i]["amount_in_cash"] / (float)$arr[$i]["totalDays"]), 3);
 			}
 			
 			return json_encode(array(
@@ -303,6 +304,58 @@
 			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
 			
 			$arr = mysql_fetch_array($query);
+			return json_encode(array(
+				"act" 		=> __CLASS__." -> ".__METHOD__." ".__LINE__,
+				"status" 	=> true,
+				"result" 	=> $arr
+			));
+		}
+		
+		public function isExitByDateByIdEmployeeByIdApartment(){
+				$query = mysql_query("
+				SELECT id
+				FROM tb_apartment_state
+				WHERE 
+					id_apartment 	= '".$this->idApartment."'
+					AND
+					date_exit 	= DATE('".$this->dateValue."')
+					AND
+					id_employee 	= '".$this->idEmployee."'
+					AND
+					`delete` = 0
+			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
+			
+			$arr = array();
+			for($i = 0; $i < mysql_num_rows($query); $i++){
+				$arr[$i] = mysql_fetch_array($query);
+			}
+			
+			return json_encode(array(
+				"act" 		=> __CLASS__." -> ".__METHOD__." ".__LINE__,
+				"status" 	=> true,
+				"result" 	=> $arr
+			));
+		}
+		
+		public function isExitByDatePeriodByIdApartment(){
+				$query = mysql_query("
+				SELECT id
+				FROM tb_apartment_state
+				WHERE 
+					id_apartment 	= '".$this->idApartment."'
+					AND
+					date_exit 	<= DATE('".$this->dateStart."')
+					AND
+					date_exit 	>= DATE('".$this->dateEnd."')
+					AND
+					`delete` = 0
+			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
+			
+			$arr = array();
+			for($i = 0; $i < mysql_num_rows($query); $i++){
+				$arr[$i] = mysql_fetch_array($query);
+			}
+			
 			return json_encode(array(
 				"act" 		=> __CLASS__." -> ".__METHOD__." ".__LINE__,
 				"status" 	=> true,

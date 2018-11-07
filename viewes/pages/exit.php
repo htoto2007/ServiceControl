@@ -27,22 +27,22 @@
 			<b><?=$Apartment_GetInfoById_ArrResult["result"]["adres"];?></b> (выезд)
 		</div>
 		<?php include ($_SERVER['DOCUMENT_ROOT']."/viewes/pages/notice.php");?>
-		<form method="post" id="sendEntry">
+		<form method="post" id="sendExit">
 			<input 
 				type="hidden" 
 				name="id_apartment_state" 
 				value="<?=$ApartmentState_getInfoByIdApartment_arr["result"][0]["id"];?>">
 			<input type="hidden" name="id_employee" value="<?=$_COOKIE["id_user"];?>">
-			
 			<div class="title">
 				Дата выезда
 			</div>
 			<div>
 				<input 
 					type="date" 
-					name="date_exit"
-					 value="<?=$ApartmentState_getInfoByIdApartment_arr["result"][0]["date_exit"];?>">
-			</div>			
+					name="date_exit" 
+					onChange="$('input#dateCleaning').val($(this).val())" 
+					value="<?=$ApartmentState_getInfoByIdApartment_arr["result"][0]["date_exit"];?>">
+			</div>
 			
 			<div class="title">
 				Гость выехал
@@ -87,7 +87,9 @@
 			</div>
 
 			<div>
-				<button onClick="_GuestLeft.sendData(); return false;">Сохранить</button>
+				<button onClick="
+					_GuestLeft.sendData();
+					return false;">Сохранить</button>
 			</div>
 		</form>
 	</div>
@@ -96,7 +98,7 @@
 	}
 ?>
 <script src="/models/javascript/model_guestLeft.js?<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/models/javascript/model_guestLeft.js');?>"></script>
-<script src="/models/javascript/model_apartmentCleaning.js<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/models/javascript/model_apartmentCleaning.js');?>"></script>
 <script>
 	var _GuestLeft = new GuestLeft();
+	
 </script>

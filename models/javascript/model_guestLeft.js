@@ -4,7 +4,7 @@ function GuestLeft(){
 	this.sendData = function(){
 		var io = new IO;
 		io.start({
-			'idForm': "form#sendEntry",					// Форма отправляемых данных
+			'idForm': "form#sendExit",					// Форма отправляемых данных
 			'data': "",						// Если форма получения данных не определена в idForm, принемает массив отправляемых данных
 			'url': "/controllers/php/controller_ajax_apartmentState_sendDataExitById.php",						// Путь до обработчика данных
 			'method': "POST",				// Принемает тип метода передачи данных

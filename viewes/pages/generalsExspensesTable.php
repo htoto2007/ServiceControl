@@ -152,16 +152,19 @@
 					echo $title["id"]."<br>";
 					echo $arrApartment["id"]."<br>";*/
 					
-					/*echo "<pre>";
-					var_dump($generalsExpenses_getInfoByDateAndIdTitleGeneralsExpenses_arr);
-					echo "</pre>";*/
+					//echo "<pre>";
+					//var_dump($generalsExpenses_getInfoByDateAndIdTitleGeneralsExpenses_arr);
+					//echo "</pre>";
 					// проверяем на пустоту массив квартир в общих расходах
 					//if($arrApartmentsFromGEneralsExpenses !== NULL){
 						
 						$res = 0;
-						if($generalsExpenses_getInfoByDateAndIdTitleGeneralsExpenses_arr["status"] !== false){
+						if(count($generalsExpenses_getInfoByDateAndIdTitleGeneralsExpenses_arr["result"]) > 0){
+							$infoAboutExpenses = "";
 							foreach($generalsExpenses_getInfoByDateAndIdTitleGeneralsExpenses_arr["result"] as $generalsExpenses_result){
 								
+								$infoAboutExpenses .= $generalsExpenses_result["start_date"]." - ".$generalsExpenses_result["end_date"]."<br>";
+								$infoAboutExpenses .= "<b>Комментарий:</b> ".$generalsExpenses_result["comment"]."<br>";
 								
 								$date1 = $generalsExpenses_result["start_date"];
 								$date2 = $generalsExpenses_result["end_date"];
@@ -172,9 +175,9 @@
 								$days += 1;
 								$price = $generalsExpenses_result["price"];
 								// идем по списку квартир, включеных в затраты
-								/*echo "<pre>";
-								var_dump($arrApartments);
-								echo "</pre>";*/
+								//echo "<pre>";
+								//var_dump($arrApartments);
+								//echo "</pre>";
 								
 								$arrApartmentsFromGEneralsExpenses = json_decode($generalsExpenses_result["arr_apartments"],true);
 								
@@ -190,19 +193,29 @@
 								}
 							}
 							?>
-								<td><?=round($res, 3);?> Руб.</td>
+								<td>
+									<?=round($res, 3);?> Руб.
+									<i class="fas fa-calendar-alt" 
+										onMouseOver="
+													 getDateInfo(
+													 	'<?=date_format($date, 'Y-m-d');?><br>' + 
+													 	'<?=$title["title"]; ?><br>' +
+														'<?=$arrApartment["adres"];?><br>' + 
+									   					'<?=$infoAboutExpenses;?>', this);
+										"
+										onMouseOut="deleteDateInfo(this)">
+								</td>
 							<?
 						}else{?>
 							<td>
-							<?php
-								/*echo "date ".$GeneralsExpenses->dateValue = date_format($date, 'Y-m-d')."<br>";
-								echo "title id ".$GeneralsExpenses->idTitlesGeneralsExpenses = $title["id"]."<br>";
-								echo "apartment id ".$GeneralsExpenses->idApartment = $arrApartment["id"]."<br>";
-
-								echo "<pre>";
-								var_dump($generalsExpenses_getInfoByDateAndIdTitleGeneralsExpenses_arr);
-								echo "</pre>";*/
-							?>
+								<i class="fas fa-calendar-alt" 
+										onMouseOver="
+													 getDateInfo(
+													 	'<?=date_format($date, 'Y-m-d');?><br>' + 
+													 	'<?=$title["title"]; ?><br>' +
+														'<?=$arrApartment["adres"];?>', this);
+										"
+										onMouseOut="deleteDateInfo(this)">
 							</td>
 						<? 
 						}
@@ -239,3 +252,25 @@
 		</th>
 	</tr>
 </table>
+<script>
+	function getDateInfo(value , elem){
+		$(elem).css('color', '#ff0000');
+		$('html').append('<div class="dateInfo">');
+		$('div.dateInfo').css('position', 'fixed');
+		$('div.dateInfo').css('top', '0px');
+		$('div.dateInfo').css('left', '0px');
+		$('div.dateInfo').css('padding', '10px');
+		$('div.dateInfo').css('z-index', '150');
+		$('div.dateInfo').css('background-color', '#0000ff');
+		$('div.dateInfo').css('width', '100%');
+		//$('div.dateInfo').css('max-height', '5%');
+		$('div.dateInfo').css('color', '#fff');
+		$('div.dateInfo').css('scroll-behavior', 'auto');
+		$('div.dateInfo').html(value);
+	}
+	
+	function deleteDateInfo(elem){
+		$('div.dateInfo').remove();
+		$(elem).css('color', '#000');
+	}
+</script>

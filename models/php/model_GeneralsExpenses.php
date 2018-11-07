@@ -42,12 +42,16 @@
 					"status" 	=> false,
 					"result" 	=> $this->idTitlesGeneralsExpenses
 				));
+			
+			if(strlen($this->comment) < 1)
+				return json_encode(array(
+					"act" 		=> __METHOD__." ".__LINE__,
+					"status" 	=> false,
+					"result" 	=> "Комментарий не может быть пустым!"
+				));
 				
-			/*echo "<pre><div style='text-align: left; font-size: 10pt; color: #000;'>";
-			var_dump($this->arrApartments);
-			echo $this->endDate;
-			echo "</div></pre>";
-			exit();*/
+			//echo $this->comment;
+			//exit();
 			mysql_query("
 				INSERT INTO tb_generals_expenses
 				SET
@@ -56,7 +60,8 @@
 					price = '".$this->price."',
 					id_employee = '".$this->idEmployee."',
 					start_date = '".$this->startDate."',
-					end_date = '".$this->endDate."'
+					end_date = '".$this->endDate."',
+					comment = '".$this->comment."'
 			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
 			
 			return json_encode(array(

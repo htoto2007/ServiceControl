@@ -29,5 +29,6 @@
 	$GeneralsExpenses->idEmployee = $_POST["id_employee"];
 	$GeneralsExpenses->startDate = $_POST["start_date"];
 	$GeneralsExpenses->endDate = $_POST["end_date"];
+	$GeneralsExpenses->comment = $_POST["comment"];
 	echo $GeneralsExpenses->create();
 ?>

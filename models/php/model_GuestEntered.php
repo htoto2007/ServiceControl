@@ -9,6 +9,7 @@
 		public $numberOfAdults = 0;
 		public $dateEntry = "";
 		
+		
 		public function initByIdApartmentState(){
 			$arr = json_decode($this->getInfoByIdApartmentState(), true);				// узнаем информацтю о заезде
 			if($arr["status"] !== true){												// если ошибка

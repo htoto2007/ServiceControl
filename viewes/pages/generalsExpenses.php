@@ -54,6 +54,10 @@
 			</select>
 		</div>
 		<div>
+			<textarea maxlength="900" name="comment" placeholder="Комментарий к расходу..."></textarea>
+			
+		</div>
+		<div>
 			<input type="number" name="price" placeholder="Сумма денег">
 		</div>
 		<div>
@@ -69,8 +73,8 @@
 	<div class="layouts">
 		<?php
 			$TitlesGeneralsExpenses = new TitlesGeneralsExpenses();
-			foreach($generalsExpenses_getInfoByDate_arr["result"] as $arrValues){
-				$apartments = json_decode($arrValues["arr_apartments"], true);
+			foreach($generalsExpenses_getInfoByDate_arr["result"] as $generalsExpenses_arrValues){
+				$apartments = json_decode($generalsExpenses_arrValues["arr_apartments"], true);
 				//echo "<pre>";
 				//print_r($apartments);
 				//echo "</pre>";
@@ -103,35 +107,40 @@
 						?>
 					</div>
 					<div>
-						<?=$arrValues["date"];?>
+						<?=$generalsExpenses_arrValues["date"];?>
 					</div>
 					<div class="row">
 						<div class="title">
-							с <?=$arrValues["start_date"];?>
+							с <?=$generalsExpenses_arrValues["start_date"];?>
 						</div>
 						<div class="value">
-							по <?=$arrValues["end_date"];?>
+							по <?=$generalsExpenses_arrValues["end_date"];?>
 						</div>
 					</div>
 					<div class="row">
 						<div class="title">
 							<?php
-								$TitlesGeneralsExpenses->id = $arrValues["id_titles_generals_expenses"];
+								$TitlesGeneralsExpenses->id = $generalsExpenses_arrValues["id_titles_generals_expenses"];
 								$titlesGeneralsExpenses_getInfoById_arr = json_decode($TitlesGeneralsExpenses->getInfoById(), true);
 								echo $titlesGeneralsExpenses_getInfoById_arr["result"]["title"];
+								
 							?>
 						</div>
 						<div class="value">
-							<?=$arrValues["price"];?> Руб.
+							<?=$generalsExpenses_arrValues["price"];?> Руб.
+						</div>
+						<div style="text-align: left;">
+							<?="<b>Комментарий:</b> ".$generalsExpenses_arrValues["comment"];?>
 						</div>
 					</div>
+					
 					<div>
-						<form method="post" id="delete<?=$arrValues["id"];?>">
-							<input type="hidden" name="id_expenses" value="<?=$arrValues["id"];?>">
-							<input type="hidden" id="info" value="<?=$titlesGeneralsExpenses_getInfoById_arr["result"]["title"];?></in> с <?=$arrValues["start_date"];?> - по <?=$arrValues["end_date"];?> на <?=$arrValues["price"];?> Руб.">
+						<form method="post" id="delete<?=$generalsExpenses_arrValues["id"];?>">
+							<input type="hidden" name="id_expenses" value="<?=$generalsExpenses_arrValues["id"];?>">
+							<input type="hidden" id="info" value="<?=$titlesGeneralsExpenses_getInfoById_arr["result"]["title"];?></in> с <?=$generalsExpenses_arrValues["start_date"];?> - по <?=$generalsExpenses_arrValues["end_date"];?> на <?=$generalsExpenses_arrValues["price"];?> Руб.">
 							<button 
 								class="no" 
-								onClick="_GeneralsExpenses.deleteById('#delete<?=$arrValues["id"];?>'); return false;">
+								onClick="_GeneralsExpenses.deleteById('#delete<?=$generalsExpenses_arrValues["id"];?>'); return false;">
 								<i class="fas fa-trash-alt"></i>
 							</button>
 						</form>

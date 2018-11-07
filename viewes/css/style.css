@@ -166,17 +166,24 @@ div.datePeriodMark{
 	margin-left: 5px;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color:#2186FF;
 	padding:5px;
-	font-size: 2em;
-	color: #FFFFFF;
+	font-size: 1.5em;
+	color: #000;
 	text-decoration:none;
 	text-align:center;
+	border: thin solid #2186FF;
+	background-color: #FFFFFF;
 }
 
 .linkButton:active{
 	background-color:#fff;
 	color: #2186FF;
+	
+}
+
+.linkButton:hover,
+button:hover{
+	border: thin solid #0AFF6A;
 }
 
 .linkButton.yes{
@@ -195,7 +202,7 @@ input[type="number"],
 input[type="password"],
 input[type="date"],
 select{
-	font-size: 16pt;
+	font-size: 1.5;
 	padding: 5px;
 	min-width: 220px;
 	max-width: 288px;
@@ -209,7 +216,7 @@ select{
 }
 
 input[type="number"].sort{
-	font-size: 16pt;
+	font-size: 1.5em;
 	padding: 5px;
 	min-width: 40px;
 	max-width: 40px;
@@ -223,24 +230,18 @@ input[type="number"].sort{
 }
 
 button{
-	outline: none;
-	background-color:#2186FF;
-	color: #fff;
-}
-
-button{
 	width: 98%;
 	display: block;
 	margin-left: 5px;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: #2186FF;
 	padding: 5px;
-	font-size: 2em;
-	color: #FFFFFF;
+	font-size: 1.5em;
+	color: #000;
 	text-decoration: none;
 	text-align: center;
-	border-style: none;
+	border: thin solid #2186FF;
+	background-color: #FFFFFF;
 }
 
 button.no{
@@ -254,7 +255,7 @@ button.yes{
 
 
 div.notice{
-	font-size: 18pt;
+	font-size: 10pt;
 }
 
 div.notice div.err{

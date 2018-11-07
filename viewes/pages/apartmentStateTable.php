@@ -185,7 +185,7 @@
 		</tr>
 		<?php
 			// итератор адресов
-			foreach($apartment_getInfo_arrResult["result"] as $j => $result){
+			foreach($apartment_getInfo_arrResult["result"] as $j => $apartment_result){
 		?>
 				<tr >
 					<?php
@@ -193,10 +193,10 @@
 					?>
 					<td class="apartment<?=$apartmentCounter;?>">
 						<?php /*?>// выводим левую колонку с названиями квартир<?php */?>
-						<b><?=$result["adres"];?></b>
+						<b><?=$apartment_result["adres"];?></b>
 
 						<script>
-							_DinamicColumn.apartmentAdreses["<?=$apartmentCounter;?>"] = "<?=$result["adres"];?>";
+							_DinamicColumn.apartmentAdreses["<?=$apartmentCounter;?>"] = "<?=$apartment_result["adres"];?>";
 						</script>
 					</td>
 					
@@ -208,7 +208,7 @@
 						// получаем список статистик по адресу
 						for($i = 0; $i < $period; $i++){
 							// получаем статистику по квартире и дате
-							$ApartmentState->idApartment = $result["id"];
+							$ApartmentState->idApartment = $apartment_result["id"];
 							$ApartmentState->dateValue = date_format($currentDate, 'Y-m-d');
 							$apartmentState_getInfoByIdApartmentAndDates_arr = json_decode(
 								$ApartmentState->getInfoByIdApartmentAndDates(), 
@@ -281,7 +281,7 @@
 																name="amountInCashSsReceived"
 																type="checkbox" <?=$checked;?> 
 																onChange="
-																	var id = '#checkbox<?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"];?>'
+																	var id = '#checkbox' + <?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"];?>;
 																	_ApartmentState.updateAmountInCashSsReceived(id);
 																">
 														</form>
@@ -383,15 +383,15 @@
 															?>
 															<form method="post" id="<?=$ApartmentCleaning->date.$ApartmentCleaning->idApartment?>">
 																<input type="hidden" id="date" value="<?=$ApartmentCleaning->date;?>">
-																<input type="hidden" name="idApartment" value="<?=$ApartmentCleaning->idApartment;?>">
-																<input type="hidden" name="dateCleaning" value="<?=$ApartmentCleaning->date;?>">
+																<input type="hidden" name="id_apartment" value="<?=$ApartmentCleaning->idApartment;?>">
+																<input type="hidden" name="date_cleaning" value="<?=$ApartmentCleaning->date;?>">
 																<input 
 																	type="hidden" 
-																	name="idCleaning" 
+																	name="id_cleaning" 
 																	id="idCleaning" 
 																	value="<?=$ApartmentCleaning_getInfoByDateAndIdApartment["result"]["id"];?>">
 																<select 
-																	name="employee" 
+																	name="id_employee" 
 																	onChange="
 																		_ApartmentCleaning.add('#<?=$ApartmentCleaning->date.$ApartmentCleaning->idApartment?>');
 																	"
@@ -438,8 +438,8 @@
 										?>
 									</table>
 									<i class="fas fa-calendar-alt" 
-										onMouseOver="getDateInfo('<?=date_format($currentDate, 'Y-m-d');?>');" 
-										onMouseOut="deleteDateInfo()"></i>
+										onMouseOver="getDateInfo('<?=date_format($currentDate, 'Y-m-d');?><br><?=$apartment_result["adres"];?>', this);"
+										onMouseOut="deleteDateInfo(this)"
 								</td>
 								
 						<?php
@@ -448,8 +448,8 @@
 						?>
 								<td colspan="3">
 									<i class="fas fa-calendar-alt" 
-										onMouseOver="getDateInfo('<?=date_format($currentDate, 'Y-m-d');?>');" 
-										onMouseOut="deleteDateInfo()"
+										onMouseOver="getDateInfo('<?=date_format($currentDate, 'Y-m-d');?><br><?=$apartment_result["adres"];?>', this);"
+										onMouseOut="deleteDateInfo(this)"
 								</td>
 						<?php
 							}
@@ -459,7 +459,21 @@
 					<td><?=$sumAdults;?></td>
 					<td><?=$sumChildren;?></td>
 					<td><?=$leftCounter;?></td>
-					<td>e</td>
+					<td>
+						<?php
+							
+							$ApartmentState->idApartment = $apartment_result["id"];
+							$ApartmentState->dateStart = date_format($dt1, 'Y-m-d');
+							$ApartmentState->dateEnd = date_format($dt2, 'Y-m-d');
+							$apartmentState_isExitByDatePeriodByIdApartment = json_decode($ApartmentState->isExitByDatePeriodByIdApartment(), true);
+							$ApartmentCleaning->idApartment = $apartment_result["id"];
+							$ApartmentCleaning->startDate = date_format($dt1, 'Y-m-d');
+							$ApartmentCleaning->endDate = date_format($dt2, 'Y-m-d');
+							$ApartmentCleaning_getInfoByDatePeriodAndIdApartment = json_decode($ApartmentCleaning->getInfoByDatePeriodAndIdApartment(), true);
+							echo count($ApartmentCleaning_getInfoByDatePeriodAndIdApartment["result"]) + count($apartmentState_isExitByDatePeriodByIdApartment["result"]);
+							//print_r($ApartmentCleaning_getInfoByDatePeriodAndIdApartment);
+						?>
+					</td>
 				</tr>
 		<?php
 			}
@@ -479,12 +493,14 @@
 	</table>
 </div>
 <script>
+		/*
 		_DinamicColumn.show();
 		$(document).on('scroll', function(){
 			setTimeout(function(){
 				_DinamicColumn.updatePosition();
 			}, 500);
 		});
+							   */
 </script>
 <script src="/models/javascript/model_apartmentState.js"></script>
 <script>
@@ -492,16 +508,22 @@
 	
 </script>
 <script>
-	function getDateInfo(value){
+	function getDateInfo(value , elem){
+		$(elem).css('color', '#ff0000');
 		$('html').append('<div class="dateInfo">');
 		$('div.dateInfo').css('position', 'fixed');
-		$('div.dateInfo').css('top', '10px');
-		$('div.dateInfo').css('left', '10px');
+		$('div.dateInfo').css('top', '0px');
+		$('div.dateInfo').css('left', '0px');
+		$('div.dateInfo').css('padding', '10px');
 		$('div.dateInfo').css('z-index', '150');
+		$('div.dateInfo').css('background-color', '#0000ff');
+		$('div.dateInfo').css('width', '100%');
+		$('div.dateInfo').css('color', '#fff');
 		$('div.dateInfo').html(value);
 	}
 	
-	function deleteDateInfo(){
+	function deleteDateInfo(elem){
 		$('div.dateInfo').remove();
+		$(elem).css('color', '#000');
 	}
 </script>
