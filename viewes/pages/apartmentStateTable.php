@@ -188,268 +188,69 @@
 			foreach($apartment_getInfo_arrResult["result"] as $j => $apartment_result){
 		?>
 				<tr >
-					<?php
-						$apartmentCounter++;
-					?>
-					<td class="apartment<?=$apartmentCounter;?>">
+					<td>
 						<?php /*?>// выводим левую колонку с названиями квартир<?php */?>
 						<b><?=$apartment_result["adres"];?></b>
-
-						<script>
-							_DinamicColumn.apartmentAdreses["<?=$apartmentCounter;?>"] = "<?=$apartment_result["adres"];?>";
-						</script>
 					</td>
 					
 					<?php
-						$sumAdults = 0;
-						$sumChildren = 0;
-						$leftCounter = 0;
 						$currentDate = new DateTime($startDate);
 						// получаем список статистик по адресу
 						for($i = 0; $i < $period; $i++){
 							// получаем статистику по квартире и дате
 							$ApartmentState->idApartment = $apartment_result["id"];
 							$ApartmentState->dateValue = date_format($currentDate, 'Y-m-d');
+							
 							$apartmentState_getInfoByIdApartmentAndDates_arr = json_decode(
 								$ApartmentState->getInfoByIdApartmentAndDates(), 
 								true
 							);
-
-							$dVal1 = $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["date_exit"];
-							$dVal2 = $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["date_entry"];
-							
-							// въезд, выезд и следующий въезд*/
-
-							$daysLeft = $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["daysLeft"];
-							$totalDayes = $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["totalDays"];
-
-							if($apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"] !== NULL){
+							if(count($apartmentState_getInfoByIdApartmentAndDates_arr["result"]) > 0){
 						?>
 								<td style="padding:0px;" colspan="3">
-									<table width="100%" height="100%">
-										<?php
-											if(((int)$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["daysLeft"] === 0)){ // если конец проживания
-										?>
-												<tr>
-													<?php
-														if(($apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["apartment_is_ready"] === "1")){
-															$leftCounter++;
-													?>
-														<td style="background-color: #2186FF; color:#FFFFFF;" colspan="3">Квартира готова</td>
-													<?php
-														}else{
-													?>
-														<td style="background-color: #DDC106;" colspan="3">Выезд</td>
-													<? } ?>
-												</tr>
-										<?php
-											}
-										?>
-
-										<?php	
-											if($daysLeft === $totalDayes){ // если начало проживания
-										?>
-												<tr>
-													<td style="background-color:#62F961;">
-														<?php
-															echo $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["number_of_adults"];
-															$sumAdults += $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["number_of_adults"]; 
-														?>
-													</td>
-													<td style="background-color:#62F961;">
-														<?php
-															echo $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["number_of_children"];
-															$sumChildren += $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["number_of_children"]; 
-														?>
-													</td>
-													<td style="background-color:#62F961;">
-														<?php
-															if($apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["amount_in_cash_is_received"] === "1") 
-																$checked = "checked";
-															else 
-																$checked = "";
-														?>	
-														<form 
-															method="post" 
-															id="checkbox<?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"];?>">
-															<input 
-																type="hidden" 
-																name="id_apartment_state" 
-																value="<?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"];?>">
-															<input 
-																value="1"
-																name="amountInCashSsReceived"
-																type="checkbox" <?=$checked;?> 
-																onChange="
-																	var id = '#checkbox' + <?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"];?>;
-																	_ApartmentState.updateAmountInCashSsReceived(id);
-																">
-														</form>
-														<?php
-															echo $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["amount_in_cash"]." руб.";
-															$sumCash[$i] += (int)$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["amount_in_cash"];
-														?>
-													</td>
-												</tr>
-										<?php
-											}
-										?>
-										<?php
-											// последний день аренды и не кто не въехал следующим
-											if((isset($apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["daysLeft"])) && 
-												((int)$apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["daysLeft"] === 0)){ // если конец проживания
-										?>
-												<tr>
-													<?php
-														if(($apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["apartment_is_ready"] === "1")){
-															$leftCounter++;
-													?>
-														<td style="background-color: #2186FF; color:#FFFFFF;" colspan="3">Квартира готова</td>
-													<?php
-														}else{
-													?>
-														<td style="background-color: #DDC106;" colspan="3">Выезд</td>
-													<? } ?>
-												</tr>
-										<?php
-											}
-										?>
-										<?php
-											// если в день выезда заехали вторые
-											if($apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["id"] !== NULL){ // если начало проживания второй статистики
-										?>
-												<tr>
-													<td style="background-color:#62F961;">
-														<?php
-															echo $apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["number_of_adults"];
-															$sumAdults += $apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["number_of_adults"]; 
-														?>
-													</td>
-													<td style="background-color:#62F961;">
-														<?php
-															echo $apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["number_of_children"];
-															$sumChildren += $apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["number_of_children"]; 
-														?>
-													</td>
-													<td style="background-color:#62F961;">
-														<?php
-															if($apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["amount_in_cash_is_received"] === "1") 
-																$checked = "checked";
-															else 
-																$checked = "";
-														?>	
-														<form 
-															method="post" 
-															id="checkbox<?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["id"];?>">
-															<input 
-																type="hidden" 
-																name="id_apartment_state" 
-																value="<?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["id"];?>">
-															<input 
-																value="1"
-																name="amountInCashSsReceived"
-																type="checkbox" <?=$checked;?> 
-																onChange="
-																	var id = '#checkbox<?=$apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"];?>'
-																	_ApartmentState.updateAmountInCashSsReceived(id);
-																">
-														</form>
-														<?php
-															
-															echo $apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["amount_in_cash"]." руб.";
-															$sumCash[$i] += (int)$apartmentState_getInfoByIdApartmentAndDates_arr["result"][1]["amount_in_cash"];
-														?>
-													</td>
-												</tr>
-										<?php
-											}
-											
-											// статус "Арендовано"
-											if(($apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id"] !== NULL) &&
-												($daysLeft !== $totalDayes) &&
-												((int)$daysLeft > 0)){ // определяем статус как кто-то живет
-										?>
-												<tr>
-													<td style="background-color: #00B30E;" colspan="3">
-                                                    	<?php
-															$AccessToApartments->idApartment = $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id_apartment"];
-															$accessToApartments_getInfoByIdApartment_arr = json_decode($AccessToApartments->getInfoByIdApartment(), true);?>
-															<div style="width: 190px;">
-															<i class="fas fa-broom" style="width: 25px;"></i>
-															<?php
-																$ApartmentCleaning->idApartment = $apartmentState_getInfoByIdApartmentAndDates_arr["result"][0]["id_apartment"];
-																$ApartmentCleaning->date = date_format($currentDate, 'Y-m-d');
-																$ApartmentCleaning_getInfoByDateAndIdApartment = json_decode($ApartmentCleaning->getInfoByDateAndIdApartment(), true);
-															?>
-															<form method="post" id="<?=$ApartmentCleaning->date.$ApartmentCleaning->idApartment?>">
-																<input type="hidden" id="date" value="<?=$ApartmentCleaning->date;?>">
-																<input type="hidden" name="id_apartment" value="<?=$ApartmentCleaning->idApartment;?>">
-																<input type="hidden" name="date_cleaning" value="<?=$ApartmentCleaning->date;?>">
-																<input 
-																	type="hidden" 
-																	name="id_cleaning" 
-																	id="idCleaning" 
-																	value="<?=$ApartmentCleaning_getInfoByDateAndIdApartment["result"]["id"];?>">
-																<select 
-																	name="id_employee" 
-																	onChange="
-																		_ApartmentCleaning.add('#<?=$ApartmentCleaning->date.$ApartmentCleaning->idApartment?>');
-																	"
-																	style="
-																		font-size: 10pt; 
-																		padding: 0px; 
-																		min-width: 0px; 
-																		width: 150px;">
-																	<?php
-																		$User->id = $ApartmentCleaning_getInfoByDateAndIdApartment["result"]["id_employee"];
-                                                                    	$user_getInfoById_arr = json_decode($User->getInfoById(), true);
-																	?>
-                                                                    <option 
-                                                                    	value="<?=$ApartmentCleaning_getInfoByDateAndIdApartment["result"]["id_employee"];?>">
-                                                                        <?php
-																			echo $user_getInfoById_arr["result"]["id"]." ";
-                                                                            echo $user_getInfoById_arr["result"]["first_name"]." ";
-                                                                            echo $user_getInfoById_arr["result"]["last_name"];
-																		?>
-                                                                     </option>
-                                                                <?php
-                                                                foreach($accessToApartments_getInfoByIdApartment_arr["result"] as $access){
-                                                                    $User->id = $access['id_employee'];
-                                                                    $user_getInfoById_arr = json_decode($User->getInfoById(), true);
-                                                                    if($user_getInfoById_arr["result"]["id"] === null) continue;
-                                                                    ?><option value="<?=$access['id_employee'];?>">
-                                                                        <?php
-                                                                            
-                                                                            $User->id = $access['id_employee'];
-                                                                            $user_getInfoById_arr = json_decode($User->getInfoById(), true);
-                                                                            echo $user_getInfoById_arr["result"]["id"]." ";
-                                                                            echo $user_getInfoById_arr["result"]["first_name"]." ";
-                                                                            echo $user_getInfoById_arr["result"]["last_name"];
-                                                                        ?>
-                                                                    </option><?php
-                                                                }?>
-                                                                </select>
-                                                            </div>
-                                                        </form>
-                                                    </td>
-												</tr>
-										<?php
-											}
-										?>
-									</table>
-									<i class="fas fa-calendar-alt" 
+								<?php
+									foreach($apartmentState_getInfoByIdApartmentAndDates_arr["result"] as $apartmentState_result){
+										$dataEntry = strtotime($apartmentState_result["date_entry"]);
+										$dateExit = strtotime($apartmentState_result["date_exit"]);
+										$isExit = $apartmentState_result["is_exit"];
+										$currDate = strtotime(date_format($currentDate, 'Y-m-d'));
+										if($dataEntry === $currDate){?>
+											<div><div class="marker entry" title="заезд"></div></div>
+										<?}
+										if($dateExit === $currDate){?>
+											<div><?
+												if((boolean)$apartmentState_result["apartment_is_ready"] === true){?>
+													<i class="fas fa-thumbs-up" style="color: #056FFF;" title="Квартира готова"></i>
+												<? }elseif((boolean)$apartmentState_result["is_exit"] === true){?>
+													<i class="fas fa-door-open" style="color: #FD0004;" title="гость выехал"></i>
+												<?}else{?>
+												<div class="marker exit" title="Выезд"></div>
+												<?}?>
+											</div>
+										<?}
+										if(($dateExit !== $currDate) &&
+										   ($dataEntry !== $currDate)){?>
+											<div><div class="marker surrenders" title="Есть прожиапющие"></div>
+										<?}
+									}
+								?>
+								<div style="text-align: left; color: #C000FF;">
+									<i class="fas fa-info-circle"  
 										onMouseOver="getDateInfo('<?=date_format($currentDate, 'Y-m-d');?><br><?=$apartment_result["adres"];?>', this);"
-										onMouseOut="deleteDateInfo(this)"
+									   onMouseOut="deleteDateInfo(this)"></i>
+									</div>
 								</td>
 								
 						<?php
 							}else{
 								//не арендовано;
 						?>
-								<td colspan="3">
-									<i class="fas fa-calendar-alt" 
+								<td colspan="3" >
+									<div style="text-align: left; color: #C000FF;">
+									<i class="fas fa-info-circle"  
 										onMouseOver="getDateInfo('<?=date_format($currentDate, 'Y-m-d');?><br><?=$apartment_result["adres"];?>', this);"
-										onMouseOut="deleteDateInfo(this)"
+									   onMouseOut="deleteDateInfo(this)"></i>
+									</div>
 								</td>
 						<?php
 							}
@@ -492,16 +293,6 @@
 		</tr>
 	</table>
 </div>
-<script>
-		/*
-		_DinamicColumn.show();
-		$(document).on('scroll', function(){
-			setTimeout(function(){
-				_DinamicColumn.updatePosition();
-			}, 500);
-		});
-							   */
-</script>
 <script src="/models/javascript/model_apartmentState.js"></script>
 <script>
 	_ApartmentState = new ApartmentState();
@@ -524,6 +315,6 @@
 	
 	function deleteDateInfo(elem){
 		$('div.dateInfo').remove();
-		$(elem).css('color', '#000');
+		$(elem).css('color', '#C000FF');
 	}
 </script>

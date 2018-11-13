@@ -248,7 +248,23 @@
 			));
 		}
 		
+		
+		
 		public function sendDataEntryById(){
+			$getInfoById_arr = json_decode($this->getInfoById(), true);
+			
+			$this->idApartment = $getInfoById_arr["result"]["id_apartment"];
+			$this->dateValue = $this->dateEntry;
+			$getInfoByIdApartmentAndDates_arr = json_decode($this->getInfoByIdApartmentAndDates(), true);
+
+			foreach($getInfoByIdApartmentAndDates_arr["result"] as $apartmentState_result){
+				if($apartmentState_result["daysLeft"] > 0)
+					return json_encode(array(
+						"act" 		=> __CLASS__." -> ".__METHOD__." ".__LINE__,
+						"status" 	=> false,
+						"result" 	=> "Квартира еще сдается!"
+					));
+			}
 			mysql_query("
 				UPDATE tb_apartment_state
 				SET
@@ -349,6 +365,32 @@
 					date_exit 	>= DATE('".$this->dateEnd."')
 					AND
 					`delete` = 0
+			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
+			
+			$arr = array();
+			for($i = 0; $i < mysql_num_rows($query); $i++){
+				$arr[$i] = mysql_fetch_array($query);
+			}
+			
+			return json_encode(array(
+				"act" 		=> __CLASS__." -> ".__METHOD__." ".__LINE__,
+				"status" 	=> true,
+				"result" 	=> $arr
+			));
+		}
+		
+		public function isNotReadyByDateByIdApartment(){
+				$query = mysql_query("
+				SELECT id
+				FROM tb_apartment_state
+				WHERE 
+					id_apartment 			= '".$this->idApartment."'
+					AND
+					date_exit 				= DATE('".$this->dateValue."')
+					AND
+					`apartment_is_ready` 	= 0
+					AND
+					`delete` 				= 0
 			") or die(mysql_error()." <b>".__FILE__." ".__LINE__."</b>");
 			
 			$arr = array();

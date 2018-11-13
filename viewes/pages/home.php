@@ -1,3 +1,6 @@
+<div style="background-color: #FF0004; color:#FFFFFF; display: none;">
+	Эта демонстрационная версия для администраторов. НЕ ИСПОЛЬЗУЙТЕ ЕЕ ДЛЯ РАБОЧИХ ПРОЦЕССОВ!
+</div>
 <?php 
 	$User = new User();
 	$User->id = $_COOKIE["id_user"];
@@ -57,6 +60,9 @@
 			href="/salaryTable" 
 			class="linkButton"
 			onClick="_pageLoader.goTo(event, this); return false;">Таблица зарплат</a>
+		<a 
+			href="http://test.servicecontrol.webtm.ru/" 
+			class="linkButton" style="background-color: #C86300; color: #FFFFFF;">В тестовую версию</a>
 		<?php } ?>
 	</div>
 		<a 

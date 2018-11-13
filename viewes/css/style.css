@@ -311,4 +311,22 @@ i.fas.fa-chevron-circle-up{
 	color: green;
 }
 
+div.marker{
+	border-style: none;
+	border-radius: 100%;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	margin: 5px;
+}
 
+div.marker.entry{
+	background-color:#16A000;	
+}
+
+div.marker.exit{
+	background-color:#D56A00;	
+}
+div.marker.surrenders{
+	background-color:#575757;	
+}

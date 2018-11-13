@@ -30,7 +30,7 @@ function GuestEntered(){
 				if(arr['status'] == true)
 					io.notice("div.notice div.ok", "Сохранено.");
 				else
-					io.notice("div.notice div.err", "Ошибка!");
+					io.notice("div.notice div.err", "Ошибка! " + arr['result']);
 			},
 			'idProgressBar': ""
 		});
